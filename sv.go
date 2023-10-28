@@ -10,7 +10,9 @@ import (
 	"bytes"
 )
 
-const signatureMarker = "**"
+// Signature Marker equals email or Usenet Signatures Marker,
+// so change that to your liking, if this is not what you want.
+const signatureMarker = "-- "
 
 func main() {
 	if len(os.Args) < 2 {
@@ -30,8 +32,8 @@ case "genkey":
 	publicKeyHex := hex.EncodeToString(publicKey)
 	privateKeyHex := hex.EncodeToString(privateKey)
 
-	publicKeyFile := "pubkey"
-	privateKeyFile := "privkey"
+	publicKeyFile := "pubme"
+	privateKeyFile := "secme"
 
 	err = ioutil.WriteFile(publicKeyFile, []byte(publicKeyHex), 0644)
 	if err != nil {
