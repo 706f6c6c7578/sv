@@ -14,7 +14,7 @@ const signatureMarker = "**"
 
 func main() {
 	if len(os.Args) < 2 {
-		fmt.Println("Usage: program [genkey|sign|verify] [message file] [key file]")
+		fmt.Println("Usage: sv [genkey|sign|verify] [message file] [key file]")
 		return
 	}
 
@@ -47,7 +47,7 @@ case "genkey":
 
 case "sign":
 	if len(os.Args) < 4 {
-		fmt.Println("Usage: program sign [message file] [private key file]")
+		fmt.Println("Usage: sv sign [message file] [private key file]")
 		return
 	}
 
@@ -89,7 +89,7 @@ case "sign":
 
 case "verify":
 	if len(os.Args) < 4 {
-		fmt.Println("Usage: program verify [message file] [public key file]")
+		fmt.Println("Usage: sv verify [message file] [public key file]")
 		return
 	}
 
@@ -128,7 +128,7 @@ case "verify":
 	}
 
 default:
-	fmt.Println("Usage: program [genkey|sign|verify] [message file] [key file]")
+	fmt.Println("Usage: sv [genkey|sign|verify] [message file] [key file]")
 	}
 }
 
