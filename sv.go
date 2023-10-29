@@ -12,7 +12,7 @@ import (
 	"strconv"
 )
 
-const signatureMarker = "-- "
+const signatureMarker = "----Ed25519 Signature----"
 
 func main() {
 	if len(os.Args) < 2 {
