@@ -9,14 +9,13 @@ import (
 	"os"
 	"bytes"
 	"strings"
-	"strconv"
 )
 
 const signatureMarker = "----Ed25519 Signature----"
 
 func main() {
 	if len(os.Args) < 2 {
-		fmt.Println("Usage: sv [genkey|sign|verify] [message file] [key file] [-l lineLength]")
+		fmt.Println("Usage: sv [genkey|sign|verify] [message file] [key file]")
 		return
 	}
 
@@ -49,24 +48,12 @@ func main() {
 
 	case "sign":
 		if len(os.Args) < 4 {
-			fmt.Println("Usage: sv sign [message file] [private key file] [-l lineLength]")
+			fmt.Println("Usage: sv sign [message file] [private key file]")
 			return
 		}
 
 		messageFile := os.Args[2]
 		keyFile := os.Args[3]
-		lineLength := 0 // Default to one long line
-
-		// Check if the user provided a line length as an integer using the -l option
-		for i := 4; i < len(os.Args); i++ {
-			if os.Args[i] == "-l" && i+1 < len(os.Args) {
-				providedLineLength, err := strconv.Atoi(os.Args[i+1])
-				if err != nil {
-					log.Fatalf("Invalid line length: %v", err)
-				}
-				lineLength = providedLineLength
-			}
-		}
 
 		privateKeyBytes, err := ioutil.ReadFile(keyFile)
 		if err != nil {
@@ -91,17 +78,14 @@ func main() {
 		signature := signMessage(privateKey, messageBytes)
 		signatureHex := hex.EncodeToString(signature)
 
-		// Split the signature into lines based on the specified line length or use a single line
-		var signatureLines []byte
-		if lineLength > 0 {
-			signatureLines = splitString(signatureHex, lineLength)
-		} else {
-			signatureLines = []byte(signatureHex)
-		}
+		// Split the signature into two lines, each 64 characters long
+		signatureLine1 := signatureHex[:64]
+		signatureLine2 := signatureHex[64:]
 
 		// Append the signature lines with the marker
 		messageWithSignature := append(messageBytes, []byte(signatureMarker+"\n")...)
-		messageWithSignature = append(messageWithSignature, []byte(signatureLines)...)
+		messageWithSignature = append(messageWithSignature, []byte(signatureLine1+"\n")...)
+		messageWithSignature = append(messageWithSignature, []byte(signatureLine2)...)
 
 		err = ioutil.WriteFile(messageFile, messageWithSignature, 0644)
 		if err != nil {
