@@ -1,5 +1,5 @@
 # sv
-Generate, sign and verify messages, with Ed25519 key pairs.
+Generate, sign and verify messages, with Ed25519 keys.
 
 Usage: sv [ gk | s | v ] [message file] [key file]
 
