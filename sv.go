@@ -22,7 +22,7 @@ func main() {
 	command := os.Args[1]
 
 	switch command {
-	case "genkey":
+	case "gk":
 		publicKey, privateKey, err := ed25519.GenerateKey(nil)
 		if err != nil {
 			log.Fatalf("Failed to generate key pair: %v", err)
@@ -46,9 +46,9 @@ func main() {
 
 		fmt.Println("Key pair generated and saved in pubkey and privkey")
 
-	case "sign":
+	case "s":
 		if len(os.Args) < 4 {
-			fmt.Println("Usage: sv sign [message file] [private key file]")
+			fmt.Println("Usage: sv s [message file] [private key file]")
 			return
 		}
 
@@ -94,9 +94,9 @@ func main() {
 
 		fmt.Printf("Signature: %s\n", signatureHex)
 
-	case "verify":
+	case "v":
 		if len(os.Args) < 4 {
-			fmt.Println("Usage: sv verify [message file] [public key file]")
+			fmt.Println("Usage: sv v [message file] [public key file]")
 			return
 		}
 
