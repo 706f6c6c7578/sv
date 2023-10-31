@@ -31,8 +31,8 @@ func main() {
 		publicKeyHex := hex.EncodeToString(publicKey)
 		privateKeyHex := hex.EncodeToString(privateKey)
 
-		publicKeyFile := "pubme"
-		privateKeyFile := "secme"
+		publicKeyFile := "pubkey"
+		privateKeyFile := "privkey"
 
 		err = ioutil.WriteFile(publicKeyFile, []byte(publicKeyHex), 0644)
 		if err != nil {
