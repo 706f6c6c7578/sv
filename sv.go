@@ -15,7 +15,7 @@ const signatureMarker = "----Ed25519 Signature----"
 
 func main() {
 	if len(os.Args) < 2 {
-		fmt.Println("Usage: sv [genkey|sign|verify] [message file] [key file]")
+		fmt.Println("Usage: sv <gk|s|v> <message file> <key file>")
 		return
 	}
 
@@ -48,7 +48,7 @@ func main() {
 
 	case "s":
 		if len(os.Args) < 4 {
-			fmt.Println("Usage: sv s [message file] [private key file]")
+			fmt.Println("Usage: sv s <message file> <private key file>")
 			return
 		}
 
@@ -96,7 +96,7 @@ func main() {
 
 	case "v":
 		if len(os.Args) < 4 {
-			fmt.Println("Usage: sv v [message file] [public key file]")
+			fmt.Println("Usage: sv v <message file> <public key file>")
 			return
 		}
 
