@@ -1,7 +1,7 @@
 # sv
 Generate, sign and verify messages, with Ed25519 keys.
 
-Usage: sv < gk | s | v > message_file key_file
+Usage: sv <gk | s | v> message_file key_file
 
 gk = generate key pair,
 s = sign,
