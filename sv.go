@@ -86,20 +86,17 @@ func signMessage(keyFile string) {
 		log.Fatalf("Failed to decode private key: %v", err)
 	}
 
-	var messageBytes []byte
-	scanner := bufio.NewScanner(os.Stdin)
-	for scanner.Scan() {
-		line := scanner.Text()
-		if line == signatureMarker {
-			break
-		}
-		messageBytes = append(messageBytes, []byte(line)...)
-		messageBytes = append(messageBytes, '\r', '\n')
+	messageBytes, err := ioutil.ReadAll(os.Stdin)
+	if err != nil {
+		log.Fatalf("Failed to read the message from stdin: %v", err)
 	}
 
-	if err := scanner.Err(); err != nil {
-		log.Fatalf("Error reading input: %v", err)
-	}
+	// Convert all line endings to LF
+	messageBytes = bytes.ReplaceAll(messageBytes, []byte("\r\n"), []byte("\n"))
+	messageBytes = bytes.ReplaceAll(messageBytes, []byte("\r"), []byte("\n"))
+
+	// Convert all LF to CRLF
+	messageBytes = bytes.ReplaceAll(messageBytes, []byte("\n"), []byte("\r\n"))
 
 	// Remove trailing CRLF if present
 	messageBytes = bytes.TrimSuffix(messageBytes, []byte("\r\n"))
@@ -118,39 +115,38 @@ func signMessage(keyFile string) {
 }
 
 func verifyMessage() {
-	scanner := bufio.NewScanner(os.Stdin)
-	var messageBytes []byte
-	var signatureHex, publicKeyHex string
-	inSignature := false
+    var messageBytes []byte
+    var signatureHex, publicKeyHex string
+    inSignature := false
 
-	for scanner.Scan() {
-		line := scanner.Text()
-		if line == signatureMarker {
-			inSignature = true
-			continue
-		}
-		if inSignature {
-			if signatureHex == "" {
-				signatureHex = line
-			} else if len(signatureHex) == 64 {
-				signatureHex += line
-			} else {
-				publicKeyHex = line
-				break
-			}
-		} else {
-			messageBytes = append(messageBytes, scanner.Bytes()...)
-			messageBytes = append(messageBytes, '\r', '\n')
-		}
-	}
+    scanner := bufio.NewScanner(os.Stdin)
+    for scanner.Scan() {
+        line := scanner.Text()
+        if line == signatureMarker {
+            inSignature = true
+            continue
+        }
+        if inSignature {
+            if signatureHex == "" {
+                signatureHex = line
+            } else if len(signatureHex) == 64 {
+                signatureHex += line
+            } else {
+                publicKeyHex = line
+                break
+            }
+        } else {
+            messageBytes = append(messageBytes, scanner.Bytes()...)
+            messageBytes = append(messageBytes, '\r', '\n')
+        }
+    }
 
-	if err := scanner.Err(); err != nil {
-		log.Fatalf("Error reading input: %v", err)
-	}
+    if err := scanner.Err(); err != nil {
+        log.Fatalf("Error reading input: %v", err)
+    }
 
-	// Remove trailing CRLF if present
-	messageBytes = bytes.TrimSuffix(messageBytes, []byte("\r\n"))
-
+    // Remove trailing CRLF if present
+    messageBytes = bytes.TrimSuffix(messageBytes, []byte("\r\n"))
 	publicKey, err := hex.DecodeString(publicKeyHex)
 	if err != nil {
 		log.Fatalf("Failed to decode public key: %v", err)
